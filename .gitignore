@@ -17,6 +17,7 @@ hs_err_pid*
 ##############################
 ## Maven
 ##############################
+demo/target/
 target/
 pom.xml.tag
 pom.xml.releaseBackup
