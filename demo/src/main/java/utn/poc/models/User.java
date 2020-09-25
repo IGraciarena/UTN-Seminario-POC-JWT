@@ -40,6 +40,7 @@ public class User {
     @Column(name = "pwd")
     private String pwd;
 
+    @Column(name = "rol")
     @Enumerated(EnumType.STRING)
     private UserRol userRol;
 }
