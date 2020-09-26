@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static utn.poc.utils.Constants.*;
+import static utn.poc.utils.Constants.USER_ALREADY_EXISTS;
+import static utn.poc.utils.Constants.USER_KEY;
+import static utn.poc.utils.Constants.USER_NOT_FOUND;
 
 @Service
 public class UserService implements UserDetailsService {
