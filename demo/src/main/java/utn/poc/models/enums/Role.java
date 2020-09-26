@@ -2,12 +2,12 @@ package utn.poc.models.enums;
 
 import utn.poc.exceptions.NotValidRolException;
 
-public enum Rol {
+public enum Role {
     client, employee, administrator;
 
-    public static Rol getRol(String rol) {
+    public static Role getRole(String role) {
 
-        switch (rol) {
+        switch (role) {
             case "client":
                 return client;
 

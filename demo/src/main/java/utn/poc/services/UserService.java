@@ -1,14 +1,14 @@
 package utn.poc.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import utn.poc.configurations.UserConfigurationToken;
 import utn.poc.exceptions.AlreadyExistsException;
@@ -32,9 +32,6 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private RedisTemplate<String, User> redisTemplate;
 
     //todo leer comentarios
@@ -42,6 +39,7 @@ public class UserService implements UserDetailsService {
         if(userRepository.findByUsername(user.getUsername()).isPresent())
             throw new AlreadyExistsException(USER_ALREADY_EXISTS);
 
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPwd(passwordEncoder.encode(user.getPwd()));
         User newUser = userRepository.save(new User(/*user*/)); //acá le tenes que pasar el userdtorequest que viene por param
 
@@ -75,6 +73,6 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = this.userRepository.findByUsername(s)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        return new UserConfigurationToken(user.getUsername(), user.getPwd(), GrantedAuthorities.getGrantedAuthority(user.getRol()));
+        return new UserConfigurationToken(user.getUsername(), user.getPwd(), GrantedAuthorities.getGrantedAuthority(user.getRole()));
     }
 }

@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import utn.poc.models.enums.Rol;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import utn.poc.models.enums.Role;
 
 @Entity
 @NoArgsConstructor
@@ -42,5 +41,5 @@ public class User {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Rol rol;
+    private Role role;
 }

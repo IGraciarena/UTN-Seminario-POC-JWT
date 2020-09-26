@@ -57,7 +57,7 @@ public class JwtFilter extends BasicAuthenticationFilter {
         if (userName != null) {
             User user = userRepository.findByUsername(userName)
                     .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-            UserConfigurationToken principal = new UserConfigurationToken(user.getUsername(), user.getPwd(), GrantedAuthorities.getGrantedAuthority(user.getRol()));
+            UserConfigurationToken principal = new UserConfigurationToken(user.getUsername(), user.getPwd(), GrantedAuthorities.getGrantedAuthority(user.getRole()));
 
             return new UsernamePasswordAuthenticationToken(userName, null, principal.getAuthorities());
         }
