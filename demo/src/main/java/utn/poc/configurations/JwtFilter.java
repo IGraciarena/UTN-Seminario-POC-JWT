@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import utn.poc.exceptions.NotFoundException;
 import utn.poc.models.User;
 import utn.poc.repositories.UserRepository;
 import utn.poc.utils.GrantedAuthorities;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import static utn.poc.utils.Constants.USER_NOT_FOUND;
 
 public class JwtFilter extends BasicAuthenticationFilter {
 
@@ -53,8 +55,9 @@ public class JwtFilter extends BasicAuthenticationFilter {
                 .getSubject();
 
         if (userName != null) {
-            User user = userRepository.findByUsername(userName);
-            UserConfigurationToken principal = new UserConfigurationToken(user.getUserName(), user.getPwd(), GrantedAuthorities.getGrantedAuthority(user.getUserRol()));
+            User user = userRepository.findByUsername(userName)
+                    .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+            UserConfigurationToken principal = new UserConfigurationToken(user.getUsername(), user.getPwd(), GrantedAuthorities.getGrantedAuthority(user.getRol()));
 
             return new UsernamePasswordAuthenticationToken(userName, null, principal.getAuthorities());
         }

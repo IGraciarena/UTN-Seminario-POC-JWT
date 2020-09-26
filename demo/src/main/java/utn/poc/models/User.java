@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import utn.poc.models.enums.UserRol;
+import utn.poc.models.enums.Rol;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,13 +34,13 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "user_name")
-    private String userName;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "pwd")
     private String pwd;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private UserRol userRol;
+    private Rol rol;
 }
