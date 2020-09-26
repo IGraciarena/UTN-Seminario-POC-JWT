@@ -1,4 +1,4 @@
-package utn.poc.config;
+package utn.poc.configurations;
 
 
 import org.springframework.context.annotation.Bean;
