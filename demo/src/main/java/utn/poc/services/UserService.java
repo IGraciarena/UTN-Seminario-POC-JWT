@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import utn.poc.configurations.UserConfigurationToken;
+import utn.poc.dto.UserDtoRequest;
 import utn.poc.exceptions.AlreadyExistsException;
 import utn.poc.exceptions.NotFoundException;
 import utn.poc.models.User;
@@ -34,14 +35,13 @@ public class UserService implements UserDetailsService {
     @Autowired
     private RedisTemplate<String, User> redisTemplate;
 
-    //todo leer comentarios
-    public User save(User /*UserDtoRequest*/ user){
+    public User save(UserDtoRequest user){
         if(userRepository.findByUsername(user.getUsername()).isPresent())
             throw new AlreadyExistsException(USER_ALREADY_EXISTS);
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPwd(passwordEncoder.encode(user.getPwd()));
-        User newUser = userRepository.save(new User(/*user*/)); //acá le tenes que pasar el userdtorequest que viene por param
+        User newUser = userRepository.save(new User(user));
 
         redisTemplate.opsForHash().put(USER_KEY, newUser.getId(), newUser);
 

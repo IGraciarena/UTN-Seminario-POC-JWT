@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import utn.poc.dto.UserDtoRequest;
 import utn.poc.models.enums.Role;
 
 @Entity
@@ -42,4 +44,13 @@ public class User {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public User(UserDtoRequest user) {
+        this.id = null;
+        this.name = user.getName();
+        this.lastName = user.getLast_name();
+        this.username = user.getUsername();
+        this.pwd = user.getPwd();
+        this.role = user.getRole();
+    }
 }
