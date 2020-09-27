@@ -22,6 +22,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserRepository userRepository;
 
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**"
+            // other public endpoints of your API may be appended to this array
+    };
+
     public WebSecurityConfig(UserService userPrincipalDetailsService, UserRepository userRepository) {
         this.userPrincipalDetailsService = userPrincipalDetailsService;
         this.userRepository = userRepository;
@@ -41,6 +53,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new LoginFilter(authenticationManager()))
                 .addFilter(new JwtFilter(authenticationManager(),  this.userRepository))
                 .authorizeRequests()
+                .antMatchers(AUTH_WHITELIST).permitAll().  // whitelist Swagger UI resources
+                // ... here goes your custom security configuration
+                        antMatchers("/**").authenticated()  // require authentication for any endpoint that's not whitelisted
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/client").authenticated()
                 .antMatchers("/employee/**").hasRole("employee")
