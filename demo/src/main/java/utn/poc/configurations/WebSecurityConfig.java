@@ -53,13 +53,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new LoginFilter(authenticationManager()))
                 .addFilter(new JwtFilter(authenticationManager(),  this.userRepository))
                 .authorizeRequests()
-                .antMatchers(AUTH_WHITELIST).permitAll().  // whitelist Swagger UI resources
+                .antMatchers(AUTH_WHITELIST).permitAll()  // whitelist Swagger UI resources
                 // ... here goes your custom security configuration
-                        antMatchers("/**").authenticated()  // require authentication for any endpoint that's not whitelisted
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers("/client").authenticated()
-                .antMatchers("/employee/**").hasRole("employee")
-                .antMatchers("/admin/**").hasRole("administrator")
+                .antMatchers("/api/client/**").authenticated()
+                .antMatchers("/api/employee/**").hasRole("employee")
+                .antMatchers("/api/admin/**").hasRole("administrator")
                 .anyRequest().authenticated();
     }
 

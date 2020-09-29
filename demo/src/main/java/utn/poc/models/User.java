@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import utn.poc.dto.UserDtoRequest;
+import utn.poc.models.enums.Role;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,9 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import utn.poc.dto.UserDtoRequest;
-import utn.poc.models.enums.Role;
+import java.io.Serializable;
 
 @Entity
 @NoArgsConstructor
@@ -22,7 +23,7 @@ import utn.poc.models.enums.Role;
 @Data
 @Table(name = "users")
 @Builder
-public class User {
+public class User implements Serializable {
 
     @Id
     @Column(name = "id_user")
@@ -48,7 +49,7 @@ public class User {
     public User(UserDtoRequest user) {
         this.id = null;
         this.name = user.getName();
-        this.lastName = user.getLast_name();
+        this.lastName = user.getLastName();
         this.username = user.getUsername();
         this.pwd = user.getPwd();
         this.role = user.getRole();
