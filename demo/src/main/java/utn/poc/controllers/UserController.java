@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import utn.poc.dto.UserDtoRequest;
-import utn.poc.exceptions.AlreadyExistsException;
 import utn.poc.models.User;
 import utn.poc.services.UserService;
 
@@ -21,7 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    public User save(UserDtoRequest userDtoRequest)throws AlreadyExistsException {
+    public User save(UserDtoRequest userDtoRequest) {
         return userService.save(userDtoRequest);
     }
 
