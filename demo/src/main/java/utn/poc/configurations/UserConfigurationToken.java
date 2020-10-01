@@ -50,4 +50,11 @@ public class UserConfigurationToken implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public String getRole(){
+
+        String role = authorities.get(authorities.size() - 1).toString();
+
+        return role.substring(5);
+    }
 }

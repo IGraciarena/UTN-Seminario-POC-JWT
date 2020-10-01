@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import utn.poc.dto.ErrorDtoResponse;
 import utn.poc.exceptions.AlreadyExistsException;
 import utn.poc.exceptions.NotFoundException;
-import utn.poc.exceptions.NotValidRolException;
 
 @RestControllerAdvice
 public class ExceptionHandlerController {
@@ -27,15 +26,6 @@ public class ExceptionHandlerController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorDtoResponse.builder()
                 .message(exception.getMessage())
                 .exception("NotFoundException")
-                .build());
-    }
-
-    @ExceptionHandler(NotValidRolException.class)
-    public ResponseEntity<ErrorDtoResponse> handleNotValidRolException(NotValidRolException exception){
-
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ErrorDtoResponse.builder()
-                .message(exception.getMessage())
-                .exception("NotValidRolException")
                 .build());
     }
 }

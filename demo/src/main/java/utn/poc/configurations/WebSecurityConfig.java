@@ -11,8 +11,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import utn.poc.repositories.UserRepository;
 import utn.poc.services.UserService;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -48,7 +54,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .cors()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .addFilter(new LoginFilter(authenticationManager()))
                 .addFilter(new JwtFilter(authenticationManager(),  this.userRepository))
@@ -57,9 +68,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // ... here goes your custom security configuration
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/api/client/**").authenticated()
-                .antMatchers("/api/employee/**").hasRole("employee")//.permitAll() para agregar el primer user
+                .antMatchers("/api/employee/**").hasAnyRole("employee", "administrator") //.permitAll() para agregar el primer user
                 .antMatchers("/api/admin/**").hasRole("administrator")
                 .anyRequest().authenticated();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(){
+        return new RestAccessDeniedHandler();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setExposedHeaders(Arrays.asList(("Authorization")));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
     @Bean
