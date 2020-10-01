@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // ... here goes your custom security configuration
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/api/client/**").authenticated()
-                .antMatchers("/api/employee/**").permitAll() //.permitAll() para agregar el primer user
+                .antMatchers("/api/employee/**").hasRole("employee")//.permitAll() para agregar el primer user
                 .antMatchers("/api/admin/**").hasRole("administrator")
                 .anyRequest().authenticated();
     }

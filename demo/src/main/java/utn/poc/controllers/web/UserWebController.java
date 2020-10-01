@@ -11,7 +11,6 @@ import utn.poc.controllers.UserController;
 import utn.poc.dto.UserDtoRequest;
 import utn.poc.dto.UserDtoResponse;
 import utn.poc.exceptions.NotFoundException;
-import utn.poc.models.User;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,13 +33,12 @@ public class UserWebController {
             @ApiResponse(code = 200, message = "Success."),
             @ApiResponse(code = 204, message = "No Content.")
     })
-    public ResponseEntity getAllUsers() {
+    public ResponseEntity<List<UserDtoResponse>> getAllUsers() {
         List<UserDtoResponse> users = userController.getAll()
                 .stream()
-                .map(user -> new UserDtoResponse(user))
+                .map(UserDtoResponse::new)
                 .collect(Collectors.toList());
-        return (users.size() > 0) ?
-                ResponseEntity.ok(users) : ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return users.isEmpty() ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(users) : ResponseEntity.ok(users);
     }
 
     @PostMapping("/employee")
