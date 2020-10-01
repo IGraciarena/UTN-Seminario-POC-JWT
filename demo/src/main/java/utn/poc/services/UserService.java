@@ -29,11 +29,15 @@ import static utn.poc.utils.Constants.USER_NOT_FOUND;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private RedisTemplate<String, User> redisTemplate;
+
+    @Autowired
+    public UserService(UserRepository userRepository, RedisTemplate<String, User> redisTemplate) {
+        this.userRepository = userRepository;
+        this.redisTemplate = redisTemplate;
+    }
 
     public User save(UserDtoRequest user){
         if(userRepository.findByUsername(user.getUsername()).isPresent())
@@ -74,5 +78,11 @@ public class UserService implements UserDetailsService {
         User user = this.userRepository.findByUsername(s)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         return new UserConfigurationToken(user.getUsername(), user.getPwd(), GrantedAuthorities.getGrantedAuthority(user.getRole()));
+    }
+
+    public void delete(Integer idUser) {
+        User user = this.userRepository.findById(idUser)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        this.userRepository.delete(user);
     }
 }
