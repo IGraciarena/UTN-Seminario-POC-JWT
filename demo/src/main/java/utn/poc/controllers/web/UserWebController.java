@@ -6,17 +6,16 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import utn.poc.controllers.UserController;
 import utn.poc.dto.UserDtoRequest;
+import utn.poc.dto.UserDtoResponse;
+import utn.poc.exceptions.NotFoundException;
 import utn.poc.models.User;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -29,9 +28,22 @@ public class UserWebController {
         this.userController = userController;
     }
 
-    //todo hacer un get para client, un post para employee y un delete para admin
+    @GetMapping("/client")
+    @ApiOperation(value = "Bring all the users")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success."),
+            @ApiResponse(code = 204, message = "No Content.")
+    })
+    public ResponseEntity getAllUsers() {
+        List<UserDtoResponse> users = userController.getAll()
+                .stream()
+                .map(user -> new UserDtoResponse(user))
+                .collect(Collectors.toList());
+        return (users.size() > 0) ?
+                ResponseEntity.ok(users) : ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
-    @PostMapping("/user")
+    @PostMapping("/employee")
     @ApiOperation(value = "Add a new User.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success."),
@@ -42,15 +54,14 @@ public class UserWebController {
         return ResponseEntity.created(RestUtils.getLocationUser(userController.save(userDtoRequest))).build();
     }
 
-    @GetMapping("/user")
-    @ApiOperation(value = "Bring all the users")
+    @ApiOperation(value = "Delete an existing user.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success."),
-            @ApiResponse(code = 204, message = "No Content.")
+            @ApiResponse(code = 404, message = "User not found.")
     })
-    public ResponseEntity getAllUsers() {
-        List<User> users = userController.getAll();
-        return (users.size() > 0) ?
-                ResponseEntity.ok(users) : ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @DeleteMapping("/admin/{idUser}")
+    public ResponseEntity deleteUser(@PathVariable Integer idUser) throws NotFoundException {
+        userController.delete(idUser);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

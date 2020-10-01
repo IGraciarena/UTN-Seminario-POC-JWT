@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import utn.poc.dto.UserDtoRequest;
 import utn.poc.exceptions.AlreadyExistsException;
+import utn.poc.exceptions.NotFoundException;
 import utn.poc.models.User;
 import utn.poc.services.UserService;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
+import static utn.poc.utils.Constants.USER_NOT_FOUND;
 
 public class UserControllerTest {
     UserController userController;
@@ -109,5 +111,18 @@ public class UserControllerTest {
     public void TestLoadUserByUsernameException() throws UsernameNotFoundException {
         when(userService.loadUserByUsername("username")).thenThrow(new UsernameNotFoundException(""));
         userController.loadUserByUsername("username");
+    }
+//**********************************************************************************************************************
+    @Test
+    public void testRemoveUserOk() throws NotFoundException {
+        doNothing().when(userService).delete(1);
+        userController.delete(1);
+        verify(userService, times(1)).delete(1);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testRemoveUserUserNotFoundException() throws NotFoundException {
+        doThrow(new NotFoundException(USER_NOT_FOUND)).when(userService).delete(null);
+        userController.delete(null);
     }
 }
