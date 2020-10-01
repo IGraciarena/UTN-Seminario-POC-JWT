@@ -2,7 +2,6 @@ package utn.poc.utils;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import utn.poc.exceptions.NotValidRolException;
 import utn.poc.models.enums.Role;
 
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ public class GrantedAuthorities {
             grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + Role.client.toString()));
             grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + Role.employee.toString()));
             grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + Role.administrator.toString()));
-        } else {
-            throw new NotValidRolException("Invalid rol");
         }
 
         return grantedAuthorities;
