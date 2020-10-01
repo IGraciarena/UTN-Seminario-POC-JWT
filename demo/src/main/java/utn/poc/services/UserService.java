@@ -83,6 +83,6 @@ public class UserService implements UserDetailsService {
     public void delete(Integer idUser) {
         User user = this.userRepository.findById(idUser)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-        this.userRepository.delete(user);
+        this.userRepository.deleteById(idUser);
     }
 }
